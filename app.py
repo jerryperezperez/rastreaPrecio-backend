@@ -1,79 +1,54 @@
-from flask import request
-from flask_cors import cross_origin, CORS
-from flask_restful import Resource, reqparse
+import os
 
-from apiModel.PrecioResource import PrecioResource
-# from apiModel.PrecioResource import PrecioResource
-from model.producto import Articulo
-from utils.util import decodificarPrecio, funcionUtil
-from config import app, db, api, scheduler
-from model.precio import Precio
-from sqlalchemy import select
+from flask import Flask, request
+from flask_migrate import Migrate
+from flask_restful import Api
+# from flask_uploads import configure_uploads, patch_request_class
 
-CORS(app)
+from config import Config
+from extensions import db, scheduler
 
-def algo(articulo_id):
-    return ArticuloList.get()
-class ArticuloResource(Resource):
-    @cross_origin()
-    def get(self, articulo_id):
-        # Lógica para obtener un producto por ID
-        articulo = Articulo.query.get(articulo_id)
-        precios = [decodificarPrecio(objeto_precio) for objeto_precio in articulo.precios]
-        if articulo:
-            return {'id': articulo.id, 'name': articulo.name, 'url': articulo.url, 'store': articulo.store,
-                    'precios': precios}
-        else:
-            return {'message': 'Producto no encontrado'}, 404
+from resources.PrecioResource import PrecioResource
+from resources.ArticuloResource import ArticuloResource
+from scheduleTask import job1
 
 
-# class PrecioResource(Resource):
-#     @cross_origin()
-#     def get(self, articulo_id):
-#         stmt = select(Precio).where(Precio.id_producto == articulo_id)
-#         result = db.session().execute(stmt)
-#         precios = [decodificarPrecio(objeto_precio) for objeto_precio in result.scalars()]
-#
-#         if precios:
-#             return precios
-#         else:
-#             return {'message': 'Ningún precio encontrado'}, 404
+def create_app():
+
+    env = os.environ.get('ENV', 'Development')
+
+    if env == 'Production':
+        config_str = 'config.ProductionConfig'
+    elif env == 'Staging':
+        config_str = 'config.StagingConfig'
+    else:
+        config_str = 'config.DevelopmentConfig'
+
+    app = Flask(__name__)
+    app.config.from_object(config_str)
+
+    register_extensions(app)
+    register_resources(app)
+
+    return app
 
 
-class ArticuloList(Resource):
-    @cross_origin()
-    def get(self):
-        articulos = db.session.query(Articulo)
-        articulos = [{'id': articulo.id, 'name': articulo.name, 'url': articulo.url, 'store': articulo.store,
-                      'precios': [decodificarPrecio(objeto_precio) for objeto_precio in articulo.precios]} for articulo in articulos]
+def register_extensions(app):
+    db.init_app(app)
+    migrate = Migrate(app, db)
+    scheduler.init_app(app)
+    print("cargando")
+    scheduler.start()
+    scheduler.add_job(func=job1, trigger='interval', seconds=4, id="dd")
 
-        return articulos
+def register_resources(app):
+    api = Api(app)
 
-    @cross_origin()
-    def post(self):
-        parser = reqparse.RequestParser()
-        parser.add_argument('name', type=str, required=True, help='Nombre del producto')
-        parser.add_argument('url', type=str, required=True, help='URL del producto')
-        parser.add_argument('store', type=str, required=True, help='Tienda del producto')
-
-        args = parser.parse_args()
-
-        new_product = Articulo(name=args['name'], url=args['url'], store=args['store'])
-        db.session.add(new_product)
-        db.session.commit()
-        return "todo bien"
+    api.add_resource(PrecioResource, '/precio')
+    api.add_resource(ArticuloResource, '/articulo/<articulo_id>')
 
 
 
-api.add_resource(ArticuloResource, '/articulo/<articulo_id>')
-api.add_resource(PrecioResource, '/precio/<articulo_id>')
-api.add_resource(ArticuloList, '/articulo')
-
-
-# @scheduler.task('interval', id='my_job', seconds=7)
-# def my_job():
-#
-#     with app.request_context():
-#         # ArticuloList.get()
-#         # print(funcionUtil(1))
-#         print('This job is executed every 10 seconds.')
+if __name__ == '__main__':
+    # app = create_app()
+    create_app().run()

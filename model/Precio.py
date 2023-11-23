@@ -1,7 +1,6 @@
 # from app import db
 from sqlalchemy import ForeignKey
-from config import db
-
+from extensions import db
 
 class Precio(db.Model):
     __tablename__ = "precio"

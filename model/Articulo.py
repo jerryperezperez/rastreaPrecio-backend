@@ -1,7 +1,5 @@
 # from app import db
-from config import db
-
-
+from extensions import db
 class Articulo(db.Model):
     __tablename__ = "articulo"
     id = db.Column(db.Integer,  primary_key=True)

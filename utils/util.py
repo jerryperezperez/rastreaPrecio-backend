@@ -1,4 +1,4 @@
-from model.producto import Articulo
+from model.Articulo import Articulo
 
 
 def decodificarPrecio(objeto_precio):

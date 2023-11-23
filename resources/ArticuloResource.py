@@ -1,6 +1,6 @@
 from flask_restful import Resource
 
-from model.producto import Articulo
+from model.Articulo import Articulo
 from utils.util import decodificarPrecio
 
 

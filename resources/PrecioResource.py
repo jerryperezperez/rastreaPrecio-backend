@@ -1,8 +1,7 @@
-from flask_cors import cross_origin
 from flask_restful import Resource
 
 
-from model.precio import Precio
+from model.Precio import Precio
 from utils.util import decodificarPrecio
 
 
