@@ -1,18 +1,10 @@
 import os
 
-from flask import Flask, request
+from flask import Flask
 from flask_cors import CORS
-from flask_migrate import Migrate
-from flask_restful import Api
-# from flask_uploads import configure_uploads, patch_request_class
-
-from config import Config
-from extensions import db, scheduler
-
-from resources.PrecioResource import PrecioResource
-from resources.ArticuloResource import ArticuloResource
+from extensions import db, scheduler, marshmallow, migrate, api
+from resources import PrecioResource, ArticuloResource, PrecioListResource
 from resources.ArticuloListResource import ArticuloListResource
-from scheduleTask import job1
 
 
 def create_app():
@@ -29,8 +21,10 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object(config_str)
 
+    register_resources(api)
+
     register_extensions(app)
-    register_resources(app)
+
 
     return app
 
@@ -38,20 +32,22 @@ def create_app():
 def register_extensions(app):
     CORS(app)
     db.init_app(app)
-    migrate = Migrate(app, db)
+    migrate.init_app(app, db)
+    marshmallow.init_app(app)
+    api.init_app(app)
+
     scheduler.init_app(app)
     scheduler.start()
-    scheduler.add_job(func=job1, trigger='interval', seconds=4, id="dd")
+    # scheduler.add_job(func=update_database, trigger='interval', seconds=4, id="dd")
 
-def register_resources(app):
-    api = Api(app)
+def register_resources(api):
 
-    api.add_resource(PrecioResource, '/precio')
-    api.add_resource(ArticuloListResource, '/articulo')
-    api.add_resource(ArticuloResource, '/articulo/<articulo_id>')
-
+    api.add_resource(ArticuloListResource, '/articulos')
+    api.add_resource(ArticuloResource, '/articulos/<articulo_id>')
+    api.add_resource(PrecioListResource, '/precios')
+    api.add_resource(PrecioResource, '/articulos/<articulo_id>/precios/<precio_id>')
 
 
 if __name__ == '__main__':
     app = create_app()
-    app.run(use_reloader=False)
+    app.run()

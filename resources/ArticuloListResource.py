@@ -1,20 +1,18 @@
-from flask_cors import cross_origin
 from flask_restful import Resource, reqparse
 from extensions import db
 from model.Articulo import Articulo
-from utils.util import decodificarPrecio
+from schema.ArticuloSchema import articuloSchema, articulosSchema
+from schema.PrecioSchema import preciosSchema
 
 
 class ArticuloListResource(Resource):
-    @cross_origin()
+
     def get(self):
-        articulos = db.session.query(Articulo)
-        articulos = [{'id': articulo.id, 'name': articulo.name, 'url': articulo.url, 'store': articulo.store,
-                      'precios': [decodificarPrecio(objeto_precio) for objeto_precio in articulo.precios]} for articulo in articulos]
+        articulos = db.session.execute(db.select(Articulo)).scalars()
+        # objetos = articulosSchema.dump(articulos)
+        resultado = [articuloSchema.to_json(articulo) for articulo in articulos]
+        return resultado
 
-        return articulos
-
-    @cross_origin()
     def post(self):
         parser = reqparse.RequestParser()
         parser.add_argument('name', type=str, required=True, help='Nombre del producto')
