@@ -5,6 +5,7 @@ from flask_cors import CORS
 from extensions import db, scheduler, marshmallow, migrate, api
 from resources import PrecioResource, ArticuloResource, PrecioListResource
 from resources.ArticuloListResource import ArticuloListResource
+from utils.scheduler_task import update_database
 
 
 def create_app():
@@ -38,7 +39,7 @@ def register_extensions(app):
 
     scheduler.init_app(app)
     scheduler.start()
-    # scheduler.add_job(func=update_database, trigger='interval', seconds=4, id="dd")
+  #  scheduler.add_job(func=update_database, trigger='interval', seconds=10, id="dd")
 
 def register_resources(api):
 

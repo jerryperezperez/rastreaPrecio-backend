@@ -10,7 +10,7 @@ class ArticuloResource(Resource):
     def get(self, articulo_id):
         articulo = db.session.execute(db.select(Articulo).filter_by(id=articulo_id)).scalar()
         if articulo:
-            objeto =articuloSchema.dump(articulo)
+            objeto = articuloSchema.dump(articulo)
             objeto["precios"] = preciosSchema.dump(articulo.precios)
             return objeto
         else:
@@ -24,6 +24,8 @@ class ArticuloResource(Resource):
 
         args = parser.parse_args()
 
+        # TODO Retornar ID del objeto recién creado
+
         new_product = Articulo(name=args['name'], url=args['url'], store=args['store'])
         db.session.add(new_product)
         db.session.commit()
@@ -36,4 +38,3 @@ class ArticuloResource(Resource):
             return "eliminado  exitosamente"
         else:
             return {'message': 'Producto no encontrado'}, 404
-

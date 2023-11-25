@@ -6,10 +6,9 @@ import requests
 from bs4 import BeautifulSoup
 
 def makeWebScrapping(articulo):
-        print(articulo)
+        print(articulo["name"])
         response = requests.get(articulo["url"])
-        fecha_actual = date.today()
-        print(fecha_actual)
+
 
         # Verificar si la solicitud fue exitosa (código de estado 200)
         if response.status_code == 200:
@@ -20,6 +19,7 @@ def makeWebScrapping(articulo):
 
         texto = soup.get_text()
         newText = texto[texto.index("- Google")::]
+        # print(newText)
 
         newText = newText[newText.index(articulo["name"])::]
 
@@ -33,3 +33,4 @@ def makeWebScrapping(articulo):
         cantidades = [float(coincidencia[0].replace(",", "")) for coincidencia in cifras_encontradas]
 
         print(cantidades[0])
+        return cantidades[0]
