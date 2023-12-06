@@ -1,5 +1,5 @@
 # from app import db
-from sqlalchemy import ForeignKey
+from sqlalchemy import ForeignKey, UniqueConstraint
 from extensions import db
 
 class Precio(db.Model):
@@ -8,6 +8,7 @@ class Precio(db.Model):
     fecha = db.Column(db.Date, nullable=False)
     precio = db.Column(db.Double, nullable=False)
     articulo_id = db.Column(db.Integer, db.ForeignKey('articulo.id'))
+    __table_args__ = (UniqueConstraint("fecha", "articulo_id"),)
 
     def save(self):
         db.session.add(self)

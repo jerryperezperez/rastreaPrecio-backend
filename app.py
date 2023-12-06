@@ -39,13 +39,13 @@ def register_extensions(app):
 
     scheduler.init_app(app)
     scheduler.start()
-  #  scheduler.add_job(func=update_database, trigger='interval', seconds=10, id="dd")
+    # scheduler.add_job(func=update_database, trigger='interval', seconds=10, id="dd")
 
 def register_resources(api):
 
     api.add_resource(ArticuloListResource, '/articulos')
     api.add_resource(ArticuloResource, '/articulos/<articulo_id>')
-    api.add_resource(PrecioListResource, '/precios')
+    api.add_resource(PrecioListResource, '/articulos/<articulo_id>/precios')
     api.add_resource(PrecioResource, '/articulos/<articulo_id>/precios/<precio_id>')
 
 
