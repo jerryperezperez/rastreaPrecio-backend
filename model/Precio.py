@@ -11,9 +11,17 @@ class Precio(db.Model):
     __table_args__ = (UniqueConstraint("fecha", "articulo_id"),)
 
     def save(self):
-        db.session.add(self)
-        db.session.commit()
+        try:
+            db.session.add(self)
+            db.session.commit()
+        except:
+            db.session.rollback()
+            print("hecho rollback")
 
     def delete(self):
-        db.session.delete(self)
-        db.session.commit()
+        try:
+            db.session.delete(self)
+            db.session.commit()
+        except:
+            db.session.rollback()
+            print("hecho rollback")

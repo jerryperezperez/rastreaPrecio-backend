@@ -9,11 +9,11 @@ def makeWebScrapping(articulo):
         print(articulo["name"])
         response = requests.get(articulo["url"])
 
-
         # Verificar si la solicitud fue exitosa (código de estado 200)
         if response.status_code == 200:
             # Parsear el contenido HTML de la página
             soup = BeautifulSoup(response.text, 'html.parser')
+            print("bien con la url")
         else:
             print(f'Error al hacer la solicitud. Código de estado: {response.status_code}')
 
@@ -23,9 +23,10 @@ def makeWebScrapping(articulo):
 
         newText = newText[newText.index(articulo["name"])::]
 
+        print("BIEN CON ENCONTRAR EL NOMBRE")
         newText = newText[newText.index("MXN")::]
         newText[0:newText.index(articulo["store"])]
-
+        print("BIEN CON ENCONTRAR LA TIENDA")
         # Buscar todas las cifras (incluyendo punto decimal) en el texto usando una expresión regular
         cifras_encontradas = re.findall(r"([0-9,]+(\.[0-9]+)?)", newText[0:newText.index(articulo["store"])])
 

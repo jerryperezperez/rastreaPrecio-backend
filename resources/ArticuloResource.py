@@ -31,6 +31,21 @@ class ArticuloResource(Resource):
         db.session.commit()
         return "todo bien"
 
+    def put(self, articulo_id):
+        parser = reqparse.RequestParser()
+        parser.add_argument('name', type=str, required=True, help='Nombre del producto')
+        parser.add_argument('url', type=str, required=True, help='URL del producto')
+        parser.add_argument('store', type=str, required=True, help='Tienda del producto')
+
+        args = parser.parse_args()
+    
+        articulo = db.session.execute(db.select(Articulo).filter_by(id=articulo_id)).scalar()
+        articulo.name = args['name']
+        articulo.url = args['url']
+        articulo.store = args['store']
+        db.session.commit()
+        return "Actualización correcta", 201
+
     def delete(self, articulo_id):
         articulo = db.session.execute(db.select(Articulo).filter_by(id=articulo_id)).scalar()
         if articulo:

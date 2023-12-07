@@ -3,16 +3,17 @@ from sqlalchemy import select
 
 from extensions import db
 from model.Precio import Precio
-from schema.PrecioSchema import precioSchema
+from schema.PrecioSchema import precioSchema, preciosSchema
 from utils.util import decodificarPrecio
 
 
 class PrecioResource(Resource):
 
     def get(self, articulo_id, precio_id):
-        precio = db.session.execute(db.select(Precio).filter_by(articulo_id=articulo_id, id=precio_id)).scalar()
+        precio = db.session.execute(db.select(Precio).filter_by(articulo_id=articulo_id)).scalars()
+        print(preciosSchema.dump(precio))
         if precio:
-            return precioSchema.dump(precio)
+            return "recibido"
         else:
             return {'message': 'Ningún precio encontrado'}, 404
 
