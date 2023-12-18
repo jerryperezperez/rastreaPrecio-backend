@@ -7,6 +7,8 @@ class Articulo(db.Model):
     name = db.Column(db.String(500), nullable=False, unique=True)
     url = db.Column(db.String(800), nullable=False, unique=True)
     store = db.Column(db.String(255), nullable=False)
+    # Indica si la busqueda se realiza con Google Shopping o de la propia tienda
+    website = db.Column(db.String(255), nullable=False)
     precios = db.relationship('Precio', backref='articulo')
 
     def save(self):
