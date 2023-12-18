@@ -28,7 +28,7 @@ class ArticuloResource(Resource):
 
         # TODO Retornar ID del objeto recién creado
 
-        new_product = Articulo(name=args['name'], url=args['url'], store=args['store'])
+        new_product = Articulo(name=args['name'], url=args['url'], store=args['store'], website=args["website"])
         db.session.add(new_product)
         db.session.commit()
         return "todo bien"

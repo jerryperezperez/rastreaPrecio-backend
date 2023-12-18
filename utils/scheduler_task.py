@@ -21,6 +21,7 @@ def update_database():
             # Inicializando el precio para cada articulo
             price = None
             print(articulo["name"])
+            print(articulo["website"])
             print("----------------------------------------------------------------------")
             # Instrucciones para simular el switch case en Python y ejecutar de acuerdo al website
             if articulo["website"] == "Google":

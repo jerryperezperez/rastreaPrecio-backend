@@ -5,6 +5,8 @@ from datetime import date
 import requests
 from bs4 import BeautifulSoup
 
+#TODO Modificar el uso de requests por el de selenium para verificar si mejora la consistencia en la
+# informacion extraida
 def makeWebScrapping(articulo):
         print(articulo["name"])
         response = requests.get(articulo["url"])
