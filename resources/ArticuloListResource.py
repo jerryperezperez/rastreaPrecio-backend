@@ -18,10 +18,11 @@ class ArticuloListResource(Resource):
         parser.add_argument('name', type=str, required=True, help='Nombre del producto')
         parser.add_argument('url', type=str, required=True, help='URL del producto')
         parser.add_argument('store', type=str, required=True, help='Tienda del producto')
+        parser.add_argument('website', type=str, required=True, help='Especificación del sitio de búsqueda del producto')
 
         args = parser.parse_args()
 
-        new_product = Articulo(name=args['name'], url=args['url'], store=args['store'])
+        new_product = Articulo(name=args['name'], url=args['url'], store=args['store'], website=args['website'])
         db.session.add(new_product)
         db.session.commit()
         return "todo bien"

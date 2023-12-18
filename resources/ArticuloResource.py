@@ -21,6 +21,8 @@ class ArticuloResource(Resource):
         parser.add_argument('name', type=str, required=True, help='Nombre del producto')
         parser.add_argument('url', type=str, required=True, help='URL del producto')
         parser.add_argument('store', type=str, required=True, help='Tienda del producto')
+        parser.add_argument('website', type=str, required=True,
+                            help='Especificación del sitio de búsqueda del producto')
 
         args = parser.parse_args()
 
@@ -36,6 +38,8 @@ class ArticuloResource(Resource):
         parser.add_argument('name', type=str, required=True, help='Nombre del producto')
         parser.add_argument('url', type=str, required=True, help='URL del producto')
         parser.add_argument('store', type=str, required=True, help='Tienda del producto')
+        parser.add_argument('website', type=str, required=True,
+                            help='Especificación del sitio de búsqueda del producto')
 
         args = parser.parse_args()
     
@@ -43,6 +47,7 @@ class ArticuloResource(Resource):
         articulo.name = args['name']
         articulo.url = args['url']
         articulo.store = args['store']
+        articulo.store = args['website']
         db.session.commit()
         return "Actualización correcta", 201
 
